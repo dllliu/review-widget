@@ -1,6 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from inference import get_product_and_description_from_url, get_questions_for_product  # Import your AI generation function
+import os 
+from flask import render_template, request   #facilitate jinja templating
+from flask import session, redirect, url_for, make_response        #facilitate form submission
+
+from inference import get_product_and_description_from_url, get_questions_for_product
 from product import insert_if_not_exists, find_by_url  # MongoDB functions
 from inference import enhance_question, categorize_review, categorize_question
 from vector_metrics import query_for_embedding
@@ -8,18 +12,45 @@ from pymongo_connection import connect_to_mongo
 import time
 import json
 
-app = Flask(__name__)
+app = Flask(__name__) 
+app.secret_key = os.urandom(32)
 CORS(app)
 client = connect_to_mongo()
 
 
 @app.route('/')
 def index():
-    return "welcome to the index page"
+    return render_template('index.html')
 
-@app.route('/testpost', methods=['POST'])
-def test_post():
-    return jsonify({"questions: "})
+@app.route('/get_product_questions', methods=['POST'])
+def test_product_questions():
+    try:
+        product_url = request.form['url']
+        product_and_questions = get_questions_for_product(get_product_and_description_from_url(product_url))
+        return render_template("response.html", product_and_questions=product_and_questions, questions = product_and_questions["questions"])
+    except Exception as e:
+        return render_template("error.html", error = str(e))
+
+@app.route("/review_submission")
+def surveyredirect(): 
+    return render_template("survey.html")
+
+@app.route("/review_question")
+def review_quesion(): 
+    return render_template("question.html")
+
+@app.route("/search_results")
+def search_results_for_question():
+    return render_template("review_aggregation.html")
+
+@app.route("/look_reviews")
+def look_reviews():
+    return render_template("review_aggregation.html")
+
+# @app.route("/submit_review")
+# def submit_review(): 
+#     pass
+#     #return render_template("index.html")
 
 @app.route('/process_product', methods=['POST', 'OPTIONS'])
 def process_product():
@@ -139,8 +170,6 @@ def search_review():
             all_intended_reviews.append(review)
         return json.dumps(all_intended_reviews)
        
-     
-        
     except Exception as e:
         print(e)
         return None

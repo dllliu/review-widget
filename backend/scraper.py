@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 def is_captcha(title):
-    captcha_keywords = ['Robot or human?', 'Activate and hold the button', 'confirm that you’re human']
+    captcha_keywords = ['Robot or human?', 'Activate and hold the button', 'confirm that you\'re human']
     return any(keyword in title for keyword in captcha_keywords)
 
 def fetch_product_info(url):

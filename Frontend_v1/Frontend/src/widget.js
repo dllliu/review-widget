@@ -44,10 +44,12 @@ const Widget = () => {
 
 
   
-  /*(useEffect(() => {
+  
+  useEffect(() => {
     console.log("webpage loaded");
     const currentUrl = window.location.href;
-    setUrl(currentUrl);
+    let url = "https://kith.com/collections/kith-footwear/products/x2j162xf85500";
+    // setUrl(currentUrl);
     const postUrl = async () => {
       const urlData = {
         url: url
@@ -68,7 +70,8 @@ const Widget = () => {
     };
 
     postUrl(); // Call the function to post data
-  }, [url]);*/
+  }, ["https://kith.com/collections/kith-footwear/products/x2j162xf85500"]);
+  
 
 
   
