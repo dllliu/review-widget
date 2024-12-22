@@ -3,6 +3,7 @@ from groq import Groq
 from dotenv import load_dotenv
 from scraper import fetch_product_info
 import json
+import tldextract
 
 load_dotenv()
 
@@ -86,25 +87,25 @@ def get_questions_for_product(json_obj):
     json_obj["questions"] = json_questions
     return json_obj
 
-def enhance_question(question):
-    question = client.chat.completions.create(
-    messages=[
-        {
-            "role": "system",
-            "content": f"""You are an expert in NLP and sentiment analysis, as well as enhancing reviews. 
-            """
-        },
-        {
-            "role": "user",
-            "content": f"""Augment this question to make it easier for us to use vector similarity search
-            to find the most similar review that addresses this question. This can come in the form
-            of increasing keywords, or talking about the item's features/use cases but make sure not to change the 
-            meaning of the question. Do not include any other output than what is asked."""
-        }
-    ],
-    model=model,
-    )
-    return question.choices[0].message.content
+# def enhance_question(question):
+#     question = client.chat.completions.create(
+#     messages=[
+#         {
+#             "role": "system",
+#             "content": f"""You are an expert in NLP and sentiment analysis, as well as enhancing reviews. 
+#             """
+#         },
+#         {
+#             "role": "user",
+#             "content": f"""Augment this question to make it easier for us to use vector similarity search
+#             to find the most similar review that addresses this question. This can come in the form
+#             of increasing keywords, or talking about the item's features/use cases but make sure not to change the 
+#             meaning of the question. Do not include any other output than what is asked."""
+#         }
+#     ],
+#     model=model,
+#     )
+#     return question.choices[0].message.content
 
 def categorize_review(review, categories):
     selected = client.chat.completions.create(
@@ -146,6 +147,13 @@ def categorize_question(question, categories):
     )
     return selected.choices[0].message.content
 
+# def extract_domain_name(url):
+#     return url.split('/')[2].split('.')[1]
+
+def extract_main_domain(url):
+    ext = tldextract.extract(url)
+    return ext.domain  
+
 if __name__ == "__main__":
     urls= [
         "https://kith.com/collections/kith-footwear/products/x2j162xf85500",
@@ -158,7 +166,8 @@ if __name__ == "__main__":
         "https://www.nike.com/t/ja-2-basketball-shoes-zNhj0Q/FD7328-500"
     ]
     for url in urls:
-        prod_entry = get_product_and_description_from_url(url)
-        final_entry = get_questions_for_product(prod_entry)
-        print(final_entry)
+        print(extract_main_domain(url))
+        # prod_entry = get_product_and_description_from_url(url)
+        # final_entry = get_questions_for_product(prod_entry)
+        # print(final_entry)
     

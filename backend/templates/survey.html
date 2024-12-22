@@ -6,13 +6,13 @@
     <body>
       <h1>Hello World</h1>
 
-      <form action = "/submit_review"> <!-- This form will submit the review to the database -->
+      <form action="/submit_review" method="POST">
         <h2>Enter your rating from 1-5</h2>
 
         <label for="rating">Rating (between 0 and 5):</label>
-        <input type="range" id="rating" name="rating" min="0" max="5">
+        <input type="range" id="rating" name="rating" min="0" max="5" value="0">
 
-        <span id="ratingValue">3</span> <!-- Display the selected value -->
+        <span id="ratingValue">0</span> <!-- Display the selected value -->
 
         <script>
           const ratingSlider = document.getElementById('rating');
@@ -25,22 +25,22 @@
 
         <br>
         <br>
-
-        <label for="review-text">Your Review:</label>
-        <input type="text" id="review-text" placeholder="Write your review here..." style="width: 300px; height: 35px; padding: 5px; font-size: 16px; border-radius: 4px;">
-        <input type="submit" value="Submit">
+        <label for="url">Your URL:</label>
+        <input type="text" id="url" name="url" placeholder="Write your URL here..." style="width: 200px; height: 20px; padding: 5px; font-size: 16px; border-radius: 4px;">
+        
+        <br>
         <br>
 
-
+        <label for="review">Your Review:</label>
+        <input type="text" id="review" name="review" placeholder="Write your review here..." style="width: 300px; height: 35px; padding: 5px; font-size: 16px; border-radius: 4px;">
+        
+        <br>
+        <br>
+        <button type="submit">Submit Review</button>
       </form>
-
+      
       <br>
-
-      <form action="/">
-        <input type=submit value="Back to home">
-      </form>
-
-      <br>
+      <input type=submit value="Back to home">
 
     </body>
 </html>
