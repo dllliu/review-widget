@@ -202,7 +202,7 @@ def delete_review_by_id(id):
 
 def find_reviews_by_url(url):
     """
-    Retrieve a review from the review table based on the review's URL.
+    Retrieve a review from the review table based on the products's URL.
 
     Args:
         url (str): The URL associated with the review.

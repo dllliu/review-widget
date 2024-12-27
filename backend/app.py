@@ -28,48 +28,93 @@ def test():
     print(get_product_and_description_from_url("https://kith.com/products/kht030146-101"))
     return jsonify(get_product_and_description_from_url("https://kith.com/products/kht030146-101"))
 
-#TODO make this a get request
-@app.route('/get_product_questions', methods=['POST'])
-def test_product_questions():
-    try:
-        product_url = request.form['url']
-        product_and_questions = get_questions_for_product(get_product_and_description_from_url(product_url))
-        return render_template("response.html", product_and_questions=product_and_questions, questions = product_and_questions["questions"])
-    except Exception as e:
-        return render_template("error.html", error = str(e))
+@app.route('/get_product_info_from_url', methods=['POST'])
+def receive_url():
+    data = request.get_json()  # Parse JSON data from the request
+    url = data.get('url')  # Extract the URL
+    print(f"Received URL: {url}")
+    
+    #return jsonify({"status": "success", "url_received": url})
+    print(jsonify(get_product_and_description_from_url(url)))
+    return jsonify(get_product_and_description_from_url(url))
 
-@app.route("/review_submission")
-def survey_direct(): 
-    return render_template("survey.html")
+@app.route('/find_reviews_from_url', methods=['POST'])
+def find_reviews_from_url():
+    data = request.get_json()  # Parse JSON data from the request
+    url = data.get('url')  # Extract the URL
+    print(find_reviews_by_url(url))
+    return find_reviews_by_url(url)
+
+
+@app.route('/get_product_questions', methods=['POST'])
+def get_product_questions():
+    data = request.get_json()  # Parse JSON data from the request
+    url = data.get('url')  # Extract the URL
+    product_and_questions = get_questions_for_product(get_product_and_description_from_url(url))
+    print(product_and_questions)
+    return product_and_questions
 
 # reviews: id, created_at, url, review, rating, category, hostSite
 @app.route("/submit_review", methods=['POST'])
 def submit_review():
     try:
-        product_url = request.form['url']
-        print(product_url)
-        review = request.form['review']
-        print(review)
-        rating = request.form['rating']
-        print(rating)
+        # Get the JSON data from the request body
+        data = request.get_json()
+
+        # Extract data from the JSON payload
+        product_url = data.get('url')
+        review = data.get('review')
+        rating = data.get('rating')
+
+        # Print out the received data for debugging
+        print(f"Product URL: {product_url}")
+        print(f"Review: {review}")
+        print(f"Rating: {rating}")
+
+        # Create a review document
         review_document = {
             "id": str(uuid.uuid4()),
             "created_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             "url": product_url,
             "review": review,
             "rating": rating,
-            "category": "test", #categorize_review(review, ["durability", "price", "accessibility", "versatility"]),
+            "category": "test",  # You can categorize the review if needed
             "hostSite": extract_main_domain(product_url)
         }
+
+        # Insert the review into the database
         res = insert_into_review_table(review_document)
+
         if not res:
-            return render_template("error.html", response = "Review submitted successfully")
-        return render_template("error.html", error=str(res))
+            return jsonify({"message": "Review submitted successfully"}), 200
+        else:
+            return jsonify({"error": str(res)}), 400
+
     except Exception as e:
-        return render_template("error.html", error = str(e))
+        return jsonify({"error": str(e)}), 500
+    # try:
+    #     product_url = request.form['url']
+    #     print(product_url)
+    #     review = request.form['review']
+    #     print(review)
+    #     rating = request.form['rating']
+    #     print(rating)
+    #     review_document = {
+    #         "id": str(uuid.uuid4()),
+    #         "created_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+    #         "url": product_url,
+    #         "review": review,
+    #         "rating": rating,
+    #         "category": "test", #categorize_review(review, ["durability", "price", "accessibility", "versatility"]),
+    #         "hostSite": extract_main_domain(product_url)
+    #     }
+    #     res = insert_into_review_table(review_document)
+    #     if not res:
+    #         return render_template("error.html", response = "Review submitted successfully")
+    #     return render_template("error.html", error=str(res))
+    # except Exception as e:
+    #     return render_template("error.html", error = str(e))
     
-
-
 @app.route("/review_question")
 def review_quesion(): 
     return render_template("question.html")
@@ -82,13 +127,13 @@ def search_results_for_question():
 def look_reviews():
     return render_template("review_aggregation.html")
 
-@app.route('/url_receiver', methods=['POST'])
-def handle_url():
-    data = request.get_json()  # Parse the JSON data sent by the extension
-    current_url = data.get('current_url')  # Get the current URL from the request
-    print(f"Received URL: {current_url}")
+# @app.route('/url_receiver', methods=['POST'])
+# def handle_url():
+#     data = request.get_json()  # Parse the JSON data sent by the extension
+#     current_url = data.get('current_url')  # Get the current URL from the request
+#     print(f"Received URL: {current_url}")
     
-    return jsonify({"message": "URL received successfully", "received_url": current_url})
+#     return jsonify({"message": "URL received successfully", "received_url": current_url})
 
 # @app.route("/submit_review")
 # def submit_review(): 

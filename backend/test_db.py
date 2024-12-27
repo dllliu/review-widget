@@ -119,7 +119,8 @@ def test_delete_review_by_id():
 
 # Test the find_review_by_url function
 def test_find_review_by_url():
-    result = find_reviews_by_url("https://www.nike.com/t/ja-2-basketball-shoes-zNhj0Q/FD7328-500")
+    #result = find_reviews_by_url("https://www.nike.com/t/ja-2-basketball-shoes-zNhj0Q/FD7328-500")
+    result = find_reviews_by_url("https://us.burberry.com/skinny-check-silk-scarf-p80947011")
     if result:
         print(f"Found review: {result}")
     else:
@@ -135,38 +136,38 @@ def test_find_product_by_url():
 
 # Run all tests
 def run_tests():
-    print("\nTesting connection to Supabase:")
-    test_connect_to_supabase()
+    # print("\nTesting connection to Supabase:")
+    # test_connect_to_supabase()
     
-    print("\nTesting select_table_contents:")
-    test_select_table_contents()
+    # print("\nTesting select_table_contents:")
+    # test_select_table_contents()
     
-    print("\nTesting add_entry:")
-    test_add_entry_user()
+    # print("\nTesting add_entry:")
+    # test_add_entry_user()
     
-    print("\nTesting insert_into_product_table:")
-    test_insert_into_product_table()
+    # print("\nTesting insert_into_product_table:")
+    # test_insert_into_product_table()
     
-    print("\nTesting insert_into_review_table:")
-    test_insert_into_review_table()
+    # print("\nTesting insert_into_review_table:")
+    # test_insert_into_review_table()
     
-    print("\nTesting update_entry:")
-    test_update_entry_user()
+    # print("\nTesting update_entry:")
+    # test_update_entry_user()
 
-    print("\nTesting edit_review:")
-    test_edit_review()
+    # print("\nTesting edit_review:")
+    # test_edit_review()
     
-    print("\nTesting delete_entry:")
-    test_delete_entry()
+    # print("\nTesting delete_entry:")
+    # test_delete_entry()
     
-    print("\nTesting delete_review_by_id:")
-    test_delete_review_by_id()
+    # print("\nTesting delete_review_by_id:")
+    # test_delete_review_by_id()
     
     print("\nTesting find_review_by_url:")
     test_find_review_by_url()
     
-    print("\nTesting find_product_by_url:")
-    test_find_product_by_url()
+    # print("\nTesting find_product_by_url:")
+    # test_find_product_by_url()
 
 if __name__ == "__main__":
     run_tests()

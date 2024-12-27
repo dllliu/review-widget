@@ -4,14 +4,42 @@
   <title>Review Central</title>
 </head>
 <body>
+
+  <button id="goToPage2">Create Review</button>
+
+  <br>
+  <br>
+
+  <button id="goToPage3">Look At Reviews</button>
+
   <h1>Welcome to Review Central!</h1>
 
-  <h3>Current URL:</h3>
-  <p id="url-display">Loading...</p>
+  <div id="product-info-display"></div> 
 
-  <button id="fetchData">Fetch Data from Python Backend</button>
-  <div id="result"></div>
+  <div id="result"></div> 
+
+  <form action="/search_results">
+
+    <label for="user-question"><h3>Review Query:</h3></label>
+    <textarea id="user-question" placeholder="How is the product's durability?" 
+    style="width: 300px; height: 100px; padding: 5px; font-size: 16px; border-radius: 4px; 
+    resize: none;"></textarea>
+    <input type="submit" value="Submit">
+    <br>
+
+  </form>
+
+  <div id="all_reviews"></div>
+
+  <!-- <h3>Current URL:</h3>
+  <p id="url-display">Loading...</p> -->
+
+  <!-- <button id="fetchData">Fetch Data from Python Backend</button>
+  <div id="result"></div> -->
+
   <script src="popup.js"></script>
+
+
 </body>
 </html>
 

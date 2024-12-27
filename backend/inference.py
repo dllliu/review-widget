@@ -166,8 +166,9 @@ if __name__ == "__main__":
         "https://www.nike.com/t/ja-2-basketball-shoes-zNhj0Q/FD7328-500"
     ]
     for url in urls:
-        print(extract_main_domain(url))
-        # prod_entry = get_product_and_description_from_url(url)
+        #print(extract_main_domain(url))
+        prod_entry = get_product_and_description_from_url(url)
+        print(prod_entry)
         # final_entry = get_questions_for_product(prod_entry)
         # print(final_entry)
     

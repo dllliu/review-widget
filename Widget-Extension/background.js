@@ -4,12 +4,12 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log("This is where you can run background tasks");
 });
 
-function getCurrentTabUrl(callback) {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const currentTab = tabs[0]; // Get the active tab
-    callback(currentTab.url); // Pass the URL to the callback
-  });
-}
+// function getCurrentTabUrl(callback) {
+//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//     const currentTab = tabs[0]; // Get the active tab
+//     callback(currentTab.url); // Pass the URL to the callback
+//   });
+// }
 
 // chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 //   if (request.action === "getCurrentUrl") {
