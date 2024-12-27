@@ -10,7 +10,8 @@
 // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 //   const currentTab = tabs[0];  // Get the first tab from the query result
 
-//    fetch('http://localhost:5000/get_product_info_from_url', {
+//    fetch('http://localhost:5000/get_product_info_from_url', { 
+// instead of this have review summary
 //     method: 'POST',
 //     headers: {
 //       'Content-Type': 'application/json',
@@ -27,8 +28,37 @@
 //   .catch((error) => {
 //     console.error('Error:', error);
 //   });
-
 // });
+
+
+document.getElementById('review-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const userQuestion = document.getElementById('user-question').value;
+
+  fetch('http://localhost:5000/question_query', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      question: userQuestion,
+    })
+  })
+  .then(response => response.json())  // Parse the JSON response
+  .then(data => {
+    console.log('Success:', data);
+    
+    document.getElementById('result').textContent = JSON.stringify(data);
+    
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Failed to submit question');
+  });
+  
+});
+
 
 document.getElementById("goToPage2").addEventListener("click", function() {
   // Load the second page (page2.html) in the popup

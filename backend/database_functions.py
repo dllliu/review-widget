@@ -237,3 +237,4 @@ def find_products_by_url(url):
         return product
     else:
         print(f"No existing products found for {url}")
+        return None
