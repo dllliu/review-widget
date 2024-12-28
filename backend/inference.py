@@ -147,6 +147,29 @@ def categorize_question(question, categories):
     )
     return selected.choices[0].message.content
 
+def summarize_all_reviews(product, reviews):
+    selected = client.chat.completions.create(
+    messages=[
+        {
+            "role": "system",
+            "content": f"""You are an expert in product summaries and you 
+            are able to generate a 2-3 sentence summary of all provided reviews, 
+            keeping in mind to highlight the most useful aspects of provided reviews of {product}. 
+            """
+        },
+        {
+            "role": "user",
+            "content": f"""Summarize these {reviews} into a short, 2-3 sentence summary
+            of all reviews for {product}, keeping in mind to highlight the most 
+            useful aspects of provided reviews for consumers of the product. Each review is numbered.
+            Try your best, make sure the summary of all reviews is only 2-3 sentences long. 
+            Your only output should be a summary with no extra output from you like here is a summary."""
+        }
+    ],
+    model=model,
+    )
+    return selected.choices[0].message.content
+
 def extract_main_domain(url):
     ext = tldextract.extract(url)
     return ext.domain  
@@ -168,4 +191,5 @@ if __name__ == "__main__":
         print(prod_entry)
         # final_entry = get_questions_for_product(prod_entry)
         # print(final_entry)
+
     

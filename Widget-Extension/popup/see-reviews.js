@@ -33,13 +33,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     console.log('Success:', data);
 
     let displayContent = '';
-    
-    // <div class="review" id="review-1">
-    // <p class="review-text">This is a review text.</p>
-    // <button class="upvote-btn">Upvote</button>
-    // <button class="edit-btn">Edit</button>
-    // <button class="delete-btn">Delete</button>
-    // </div>
 
     // Loop through the array of reviews
     if (Array.isArray(data)) {
