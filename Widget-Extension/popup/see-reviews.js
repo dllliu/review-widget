@@ -15,6 +15,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
     // Loop through the array of reviews
     if (Array.isArray(data)) {
+      // Sort the reviews by upvote count in descending order
+      data.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
 
       data.forEach((entry, index) => {
         displayContent += `<div class="review" id= \"${entry.id}\" style="border: 1px solid #ccc; width: 400px;">`;
@@ -28,7 +30,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         displayContent += `<button class="delete-btn" data-id="${entry.id}">Delete</button>`;
         displayContent += '</div>';
       });
-
     }
 
     // Set the formatted content in the element with ID 'all_reviews'
@@ -56,6 +57,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 // Upvote handler
 function handleUpvote(event) {
   const reviewId = event.target.getAttribute('data-id');
+  const upvoteButton = event.target;
+
+  // Disable the upvote button to prevent multiple clicks
+  upvoteButton.disabled = true;
+
   // Send upvote request to the backend
   fetch('http://localhost:5000/upvote_review', {
     method: 'POST',
@@ -73,7 +79,11 @@ function handleUpvote(event) {
       }
     }
   })
-  .catch(error => console.error('Error upvoting:', error));
+  .catch(error => {
+    console.error('Error upvoting:', error);
+    // Re-enable the upvote button if there was an error
+    upvoteButton.disabled = false;
+  });
 }
 
 // Delete handler

@@ -46,6 +46,8 @@ ratingValue.textContent = ratingSlider.value;
 });
 
 document.getElementById('review-form').addEventListener('submit', function(event) {
+    // Disable the submit button to prevent multiple submissions
+    document.getElementById('submit-review').disabled = true;
     event.preventDefault();  // Prevent the default form submission
 
     // Get the values from the form fields
