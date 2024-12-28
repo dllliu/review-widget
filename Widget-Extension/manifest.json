@@ -11,7 +11,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_popup": "popup/hello.html",
+    "default_popup": "popup/landing.html",
     "default_icon": "assets/content_article_review.png"
   },
   "host_permissions": [
