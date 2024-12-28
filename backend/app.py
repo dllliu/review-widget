@@ -10,10 +10,6 @@ import time
 import json
 from datetime import datetime
 
-# from product import insert_if_not_exists, find_by_url 
-# from inference import enhance_question, categorize_review, categorize_question
-# from vector_metrics import query_for_embedding
-
 app = Flask(__name__) 
 app.secret_key = os.urandom(32)
 CORS(app)
@@ -109,6 +105,49 @@ def review_query():
     print(question_category)
     print(res)
     return res
+
+@app.route("/delete_review", methods=['POST'])
+def delete_review():
+    data = request.get_json()
+    review_id = data.get("reviewId")
+    if delete_review_by_id(review_id):
+        print(review_id)
+        print(delete_review_by_id(review_id))
+        return jsonify({"message": "Review deleted successfully"}), 200
+    return jsonify({"message": "Error in deleting review"}), 500
+
+@app.route('/edit_review', methods=['POST'])
+def edit_review():
+    try:
+        data = request.get_json()
+
+        review_id = data.get('reviewId')
+        updated_review = data.get('newText')
+        updated_rating = data.get('newRating')
+
+        # Print out the received data for debugging
+        print(f"Review ID: {review_id}")
+        print(f"Updated Review: {updated_review}")
+        print(f"Updated Rating: {updated_rating}")
+
+        # keep in mind timestamp and other details
+        # updated_review_document = {
+        #     "review": updated_review,
+        #     "rating": updated_rating,
+        #     "category": categorize_review(updated_review, ["durability", "price", "accessibility", "versatility"])
+        # }
+
+        # Update the review in the database
+        res = edit_review_db(review_id, updated_review, updated_rating)
+
+        if res:
+            return jsonify({"success": "true"}), 200
+        else:
+            return jsonify({"error": str(res)}), 400
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
     
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

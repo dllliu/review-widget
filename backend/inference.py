@@ -147,9 +147,6 @@ def categorize_question(question, categories):
     )
     return selected.choices[0].message.content
 
-# def extract_domain_name(url):
-#     return url.split('/')[2].split('.')[1]
-
 def extract_main_domain(url):
     ext = tldextract.extract(url)
     return ext.domain  

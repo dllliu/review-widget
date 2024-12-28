@@ -159,7 +159,7 @@ def insert_into_review_table(query):
         print(f"Review {query["id"]} already exists")
         return None
 
-def edit_review(id, new_review, new_rating):
+def edit_review_db(id, new_review, new_rating):
     """
     Edit an existing review by updating the review content and rating based on the review ID.
 
@@ -180,6 +180,7 @@ def edit_review(id, new_review, new_rating):
         return res_data
     else:
         print(f"No existing reviews found for {id}")
+        return None
         
 def delete_review_by_id(id):
     """
@@ -189,7 +190,7 @@ def delete_review_by_id(id):
         id (int): The unique identifier of the review to delete.
 
     Returns:
-        None: This function does not return a value but prints a message if no review is found.
+        bool: True if review deleted otherwise False
 
     Raises:
         Exception: If there is an error during deletion, an exception is printed.
@@ -197,8 +198,10 @@ def delete_review_by_id(id):
     review = select_table_contents(REVIEW_TABLE, "id", "id", id)
     if review != []:
         delete_entry(REVIEW_TABLE, "id", id)
+        return True
     else:
         print(f"No existing reviews found for {id}")
+        return False
 
 def find_reviews_by_url(url):
     """

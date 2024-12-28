@@ -62,10 +62,10 @@ document.getElementById('review-form').addEventListener('submit', function(e) {
 
 document.getElementById("goToPage2").addEventListener("click", function() {
   // Load the second page (page2.html) in the popup
-  document.location.href = chrome.runtime.getURL("popup/page2.html");
+  document.location.href = chrome.runtime.getURL("popup/create-review.html");
 });
 
 document.getElementById("goToPage3").addEventListener("click", function() {
   // Load the second page (page2.html) in the popup
-  document.location.href = chrome.runtime.getURL("popup/page3.html");
+  document.location.href = chrome.runtime.getURL("popup/see-reviews.html");
 });

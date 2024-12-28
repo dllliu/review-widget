@@ -76,7 +76,8 @@ document.getElementById('review-form').addEventListener('submit', function(event
             console.log('Review submitted successfully:', data);
             
             // Close the popup after submission to force Chrome to reopen it on the next click
-            window.close();
+            // window.close();
+            document.location.href = chrome.runtime.getURL("popup/see-reviews.html");
         })
         .catch((error) => {
             console.error('Error submitting review:', error);
