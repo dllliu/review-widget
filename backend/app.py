@@ -17,7 +17,8 @@ from database_functions import (
     insert_into_review_table,
     select_table_contents,
     delete_review_by_id,
-    edit_review_db,
+    edit_review_db_reviews_and_ratings,
+    edit_review_db_upvotes,
     insert_into_product_table,
     REVIEW_TABLE
 )
@@ -131,13 +132,42 @@ def edit_review():
         updated_review = data.get('newText')
         updated_rating = data.get('newRating')
 
-        res = edit_review_db(review_id, updated_review, updated_rating)
+        res = edit_review_db_reviews_and_ratings(review_id, updated_review, updated_rating)
         if res:
             return jsonify({"success": "true"}), 200
         else:
             return jsonify({"error": str(res)}), 400
 
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/upvote_review', methods=['POST'])
+def upvote_review():
+    try:
+        data = request.get_json()
+        review_id = data.get('reviewId')
+
+
+        # Fetch the review from the database
+        review = select_table_contents(REVIEW_TABLE, "*", "id", review_id)
+        if not review:
+            return jsonify({"error": "Review not found"}), 404
+        
+        # Update the upvote count
+        if review[0]["upvotes"] == None:
+            current_upvotes = 0
+        else:
+            current_upvotes = review[0].get('upvotes')
+        new_upvotes = current_upvotes + 1
+
+        res = edit_review_db_upvotes(review_id, new_upvotes)
+        if res:
+            return jsonify(res[0]["upvotes"]), 200
+        else:
+            return jsonify({"error": str(res)}), 400
+
+    except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":

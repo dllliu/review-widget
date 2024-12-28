@@ -159,7 +159,7 @@ def insert_into_review_table(query):
         print(f"Review {query["id"]} already exists")
         return None
 
-def edit_review_db(id, new_review, new_rating):
+def edit_review_db_reviews_and_ratings(id, new_review, new_rating):
     """
     Edit an existing review by updating the review content and rating based on the review ID.
 
@@ -177,6 +177,29 @@ def edit_review_db(id, new_review, new_rating):
     review_exists = select_table_contents(REVIEW_TABLE, "id", "id", id)
     if review_exists != []:
         res_data = update_entry(REVIEW_TABLE, {"review": new_review, "rating": new_rating}, "id", id)
+        return res_data
+    else:
+        print(f"No existing reviews found for {id}")
+        return None
+
+def edit_review_db_upvotes(id, new_upvotes):
+    """
+    Edit an existing review by updating the upvotes based on the review ID.
+
+    Args:
+        id (str, int): The unique identifier of the review to update.
+        new_upvotes (int): The new upvotes count for the review.
+
+    Returns:
+        None: This function does not return a value but prints a message if no existing review is found.
+
+    Raises:
+        Exception: If there is an error during the update, an exception is printed.
+    """
+    review_exists = select_table_contents(REVIEW_TABLE, "id", "id", id)
+    if review_exists != []:
+        res_data = update_entry(REVIEW_TABLE, {"upvotes": new_upvotes}, "id", id)
+        print(res_data)
         return res_data
     else:
         print(f"No existing reviews found for {id}")
