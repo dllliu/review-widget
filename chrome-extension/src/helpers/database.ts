@@ -8,7 +8,7 @@ const SUPABASE_KEY = process.env.SUPABASE_KEY || "your-supabase-key";
 const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Constants for table names
-const USERS_TABLE = "userInfo";
+// const USERS_TABLE = "userInfo";
 const PRODUCT_TABLE = "productInfo";
 const REVIEW_TABLE = "reviews";
 
@@ -188,7 +188,7 @@ async function fetchDataFromSupabase(): Promise<Record<string, any>[] | null> {
 }
 
 // Listen for messages from popup or content script
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
     if (request.action === "fetchData") {
         fetchDataFromSupabase()
             .then((data) => {

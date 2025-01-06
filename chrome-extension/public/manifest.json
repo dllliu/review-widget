@@ -8,10 +8,23 @@
         "48": "icons/logoGenie-48.png",
         "128": "icons/logoGenie-128.png"
     },
+    "background": {
+        "service_worker": "/background.js"
+    },
     "action": {
-        "default_popup": "index.html",
+        "default_popup": "/src/Home.html",
         "default_icon": "icons/logoGenie-48.png"
     },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "/src/Home.html"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
     "permissions": [
         "activeTab"
     ]
