@@ -5,7 +5,8 @@
   "manifest_version": 3,
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "scripting"
   ],
   "background": {
     "service_worker": "background.js"
@@ -15,7 +16,9 @@
     "default_icon": "assets/content_article_review.png"
   },
   "host_permissions": [
-    "https://localhost/*"
+    "https://localhost/*",
+    "http://*/*",
+    "https://*/*"
   ],
   "content_scripts": [
     {

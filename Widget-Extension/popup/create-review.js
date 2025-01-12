@@ -16,13 +16,18 @@ document.getElementById('review_help').addEventListener('click', function() {
         console.log('Product questions fetched:', data);
 
         let formattedQuestions = '';
+        const numRandomQuestions = 3; // Number of random questions to display
 
-        // Loop through each question in the 'data' object
-        for (const key in data.questions) {
-        formattedQuestions += data.questions[key] + '\n';  // Add each question with a newline
+        // Convert the questions object into an array
+        const questionArray = Object.values(data.questions);
+
+        // Select random questions without shuffling the whole array
+        for (let i = 0; i < numRandomQuestions; i++) {
+          const randomIndex = Math.floor(Math.random() * questionArray.length);
+          formattedQuestions += questionArray[randomIndex] + '\n';
         }
 
-        // Set the formatted questions as the inner text of the element with id 'product-questions'
+        // Set the formatted random questions as the inner text of the element with id 'product-questions'
         document.getElementById('product-questions').innerText = formattedQuestions;
         // document.getElementById('product-questions').innerText = JSON.stringify(data.questions);
       })

@@ -9,6 +9,7 @@ from inference import (
     categorize_review,
     categorize_question,
     summarize_all_reviews,
+    generate_question_response,
     extract_main_domain
 )
 from database_functions import (
@@ -29,7 +30,41 @@ CORS(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return "Hello World"
+
+@app.route("/product_startup", methods=['POST'])
+def product_startup():
+    data = request.get_json()
+    url = data.get('url')
+    htmlContent = data.get('html')
+    product_info = find_products_by_url(url)
+
+    if product_info:
+        return jsonify(product_info), 200
+    else:
+        product_and_questions = get_questions_for_product(get_product_and_description_from_url(htmlContent))
+        product_data = {
+        "id": str(uuid.uuid4()),
+        "created_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        "category": product_and_questions["category"],
+        "title": product_and_questions['title'],
+        "description": product_and_questions['description'],
+        "url": url,
+        "questions": product_and_questions['questions']
+        }
+
+        insert_into_product_table(product_data)
+    
+    return jsonify(product_and_questions), 200
+
+@app.route('/get_product_questions', methods=['POST'])
+def get_product_questions():
+    data = request.get_json()
+    url = data.get('url')
+    product_info = find_products_by_url(url)
+
+    #questions extracted later
+    return jsonify(product_info[0]), 200
 
 @app.route('/find_reviews_from_url', methods=['POST'])
 def find_reviews_from_url():
@@ -37,33 +72,6 @@ def find_reviews_from_url():
     url = data.get('url')
     reviews = find_reviews_by_url(url)
     return jsonify(reviews), 200
-
-@app.route('/get_product_questions', methods=['POST'])
-def get_product_questions():
-    data = request.get_json()
-    url = data.get('url')
-
-    product_info = find_products_by_url(url)
-    if product_info:
-        return jsonify(product_info[0]), 200
-
-    #does not exist so insert into db
-    product_and_questions = get_questions_for_product(get_product_and_description_from_url(url))
-    print(product_and_questions)
-
-    product_data = {
-        "id": str(uuid.uuid4()),
-        "created_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        "category": "shoes",
-        "title": product_and_questions['title'],
-        "description": product_and_questions['description'],
-        "url": product_and_questions['url'],
-        "questions": product_and_questions['questions']
-    }
-
-    insert_into_product_table(product_data)
-
-    return jsonify(product_and_questions), 200
 
 @app.route('/review_summary', methods=['POST'])
 def review_summary():
@@ -112,8 +120,16 @@ def submit_review():
 def review_query():
     data = request.get_json()
     question = data.get('question')
+    url = data.get('url')
     question_category = categorize_question(question, ["durability", "price", "accessibility", "versatility"])
-    res = select_table_contents(REVIEW_TABLE, "*", "category", question_category)
+    res = select_table_contents(REVIEW_TABLE, "*", "category", question_category) 
+    res = [review for review in res if review['url'] == url]
+
+    if not res: #if any reviews exist?
+        product_info = find_products_by_url(url) 
+        product_info_str = product_info[0]["title"] + " " + product_info[0]["category"] + " " + product_info[0]["description"]
+        res = generate_question_response(product_info_str, question)
+
     return jsonify(res), 200
 
 @app.route("/delete_review", methods=['POST'])

@@ -21,7 +21,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       data.forEach((entry, index) => {
         displayContent += `<div class="review" id= \"${entry.id}\" style="border: 1px solid #ccc; width: 400px;">`;
         displayContent += `<p><strong>Category:</strong> ${entry.category}</p>`;
-        displayContent += `<p><strong>Created At:</strong> ${new Date(entry.created_at).toLocaleString()}</p>`;
+        displayContent += `<p><strong>Created At:</strong> ${new Date(entry.created_at).toLocaleString('en-US', { timeZone: 'UTC' })}</p>`;
         displayContent += `<p><strong>Rating:</strong> ${entry.rating}</p>`;
         displayContent += `<p><strong>Review:</strong> ${entry.review}</p>`;
         displayContent += `<p><strong>Upvotes:</strong> <span class="upvote-count" data-id="${entry.id}">${entry.upvotes || 0}</span></p>`;

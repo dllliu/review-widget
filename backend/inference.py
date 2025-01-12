@@ -1,7 +1,7 @@
 import os
 from groq import Groq
 from dotenv import load_dotenv
-from scraper import fetch_product_info
+from scraper import clean_html
 import json
 import tldextract
 
@@ -13,24 +13,43 @@ client = Groq(
 model = "llama3-70b-8192"
 max_tries = 3
 
-def get_product_and_description_from_url(url):
-    title, description = fetch_product_info(url)
-
+def get_product_and_description_from_url(webHtml):
+    title, description = clean_html(webHtml)
+    #print(title, description)
+   
     num_tries = 0
     while(num_tries <= max_tries):
         pre_json_title_and_description = client.chat.completions.create(
             messages=[
                 {
                     "role": "system",
-                    "content": """You are an expert in e-commerce, writing titles and descriptions for products with ease. 
-                    """
+                    "content": """You are an expert in e-commerce websites with deep knowledge in extracting and generating product titles, 
+                    descriptions, and categories from web content. You can synthesize accurate product descriptions 
+                    even when the HTML doesn't provide detailed features. Use your expertise to make educated assumptions about the product based on its name, category, and context."""
                 },
                 {
                     "role": "user",
-                    "content": f"""Extract title, description, and category of the product from the HTML at this product page 
-                    {title} and {description}. Make sure the description accurately describes the product. 
-                    Return a title and description and category as a json object with no other output.
-                    Make sure your output has those fields."""
+                    "content": f"""Extract the title, description, and category of the product from the provided parsed HTML data. 
+                    The title should be the product name, and the description should be a clear 
+                    and accurate representation of the product features.
+
+                    If the parsed HTML lacks detailed features or description, use the surrounding context or 
+                    any available information from {title} and {description} to generate a description that is relevant, 
+                    helpful, and accurate for the product. For example, if the product is an electronic item, use 
+                    standard features that would apply to that category.
+
+                    The parsed HTML may contain irrelevant content such as website features, customer reviews, 
+                    or promotional material. Focus only on the most relevant information that pertains to the product's 
+                    title and description.
+
+                    Please return the output as a **JSON object** with the following fields:
+                    - "title" (string): The product title.
+                    - "category" (string): The product category, even if some details are missing. Ensure it's 
+                       accurate and relevant.
+                    - "description" (string): The product description, even if some details are missing. Ensure it's 
+                       accurate, coherent, and relevant.
+
+                    Do **not** include any other explanation, code, or additional information. Provide only the JSON output with the requested fields."""
                 }
             ],
             model=model,
@@ -47,8 +66,6 @@ def get_product_and_description_from_url(url):
                 num_tries+=1
                 continue
 
-    json_obj["url"] = url
-
     return json_obj
 
 
@@ -60,7 +77,8 @@ def get_questions_for_product(json_obj):
         messages=[
             {
                 "role": "system",
-                "content": """You are an expert reviewer for e-commerce items, as well as how best to ask questions for other people to write as authentic and good reviews as you can. 
+                "content": """You are an expert reviewer for e-commerce items, 
+                as well as how best to ask questions for other people to write as authentic and good reviews as you can. 
                 """
             },
             {
@@ -169,6 +187,31 @@ def summarize_all_reviews(product, reviews):
     model=model,
     )
     return selected.choices[0].message.content
+
+
+
+def generate_question_response(product, question): #maybe add reviews
+    selected = client.chat.completions.create(
+    messages=[
+        {
+            "role": "system",
+            "content": f"""You are an expert in product reviews and customer support. 
+            You can generate accurate and helpful responses to customer questions based 
+            on product details. Use your expertise to provide a relevant 
+            and concise response to the given question about {product}. Consider the product's features, 
+            use cases, and any relevant information."""
+        },
+        {
+            "role": "user",
+            "content": f"""Based on the product details {product}, 
+            provide a relevant and concise response to the question: "{question}". 
+            Ensure the response is helpful and accurate. Try your best to answer."""
+        }
+    ],
+    model=model,
+    )
+    return selected.choices[0].message.content
+
 
 def extract_main_domain(url):
     ext = tldextract.extract(url)
