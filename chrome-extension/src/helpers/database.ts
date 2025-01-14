@@ -1,8 +1,11 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-// Constants for Supabase setup
-const SUPABASE_URL = process.env.SUPABASE_URL || "your-supabase-url";
-const SUPABASE_KEY = process.env.SUPABASE_KEY || "your-supabase-key";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+    throw new Error('Supabase credentials are not set in environment variables.');
+}
 
 // Initialize Supabase client
 const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -161,7 +164,7 @@ async function findReviewsByUrl(url: string): Promise<Record<string, any>[] | nu
 }
 
 // Find products by URL
-async function findProductsByUrl(url: string): Promise<Record<string, any>[] | null> {
+async function findProductByUrl(url: string): Promise<Record<string, any>[] | null> {
     const product = await selectTableContents(PRODUCT_TABLE, "*", "url", url);
     if (product && product.length > 0) {
         return product;
@@ -214,6 +217,6 @@ export {
     editReview,
     deleteReviewById,
     findReviewsByUrl,
-    findProductsByUrl,
+    findProductByUrl,
     fetchDataFromSupabase,
 };

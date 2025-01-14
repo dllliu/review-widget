@@ -5,13 +5,12 @@ interface Product {
     description: string;
 }
 
-
 interface HomeProps {
-    product: Product;
+    productData: Product | null;
 }
 
 
-const Home: React.FC<HomeProps> = ({ product }) => {
+const Home: React.FC<HomeProps> = ({ productData }) => {
     const [question, setQuestion] = useState<string>('');
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -55,11 +54,11 @@ const Home: React.FC<HomeProps> = ({ product }) => {
             <hr className="border-t-2 border-black my-4" />
 
             {/* Conditionally render product data */}
-                <div>
-                    <h2 className="text-xl font-semibold">{product.title}</h2>
-                    <h3 className="font-medium mt-2">Description:</h3>
-                    <p className="mt-1">{product.description}</p>
-                </div>
+            <div>
+                <h2 className="text-xl font-semibold">{productData?.title}</h2>
+                <h3 className="font-medium mt-2">Description:</h3>
+                <p className="mt-1">{productData?.description}</p>
+            </div>
         </div>
     );
 };

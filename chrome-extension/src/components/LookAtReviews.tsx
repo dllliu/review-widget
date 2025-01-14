@@ -1,11 +1,11 @@
 import React from 'react';
 
-const LookAtReview: React.FC = () => {
+const LookAtReviews: React.FC = () => {
     return (
         <div>
-            <h1>This is the Look At Review Page</h1>
+            <h1>This is the LookAtReview Page</h1>
         </div>
-    );
+    )
 };
 
-export default LookAtReview;
+export default LookAtReviews;

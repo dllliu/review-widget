@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     viteStaticCopy({
       targets: [
-        { src: 'public/manifest.json', dest: '.' },
+        { src: 'manifest.json', dest: '.' },
       ],
     }),
   ],

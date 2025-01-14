@@ -4,42 +4,91 @@ import Home from "./Home.tsx"
 import Help from "./Help.tsx"
 import LeaveReview from "./LeaveReview.tsx"
 import LookAtReviews from "./LookAtReviews.tsx"
-import axios from 'axios';
+import { findProductByUrl, findReviewsByUrl } from "../helpers/database.ts"
 
 interface Product {
     title: string;
     description: string;
 }
 
-const postUrl = async (url: string): Promise<Product> => { // Define the return type of postUrl
-    try {
-        const response = await axios.post('http://localhost:5000/process_product', { url });
-        // Assert the type of the response data
-        return response.data as Product; // Explicitly cast response.data to ProductData
-    } catch (error) {
-        console.error('Error posting URL:', error);
-        return { title: '', description: '' }; // Return empty object in case of an error
-    }
-};
+interface Review {
+    id: string
+    review: string;
+    rating: number;
+    category: string;
+    upvotes: number;
+}
 
 const Main: React.FC = () => {
-    const [_productData, setProductData] = useState<Product>({ title: '', description: '' }); // Change state to store the object
+    const [currentUrl, setCurrentUrl] = useState(""); // State to hold the URL
+    const [productData, setProductData] = useState<Product | null>(null); // Now it can hold null if no product data
+    const [_reviewsData, setReviewsData] = useState<Review[] | null>(null); // Now it can hold null if no product data
     const [currentPage, setCurrentPage] = useState<string>('home');
-    const product: Product = {
-        title: 'Laptop',
-        description: 'A high performance laptop.',
-    };
 
     useEffect(() => {
-        const currentUrl = window.location.href;
-
         const fetchData = async () => {
-            const data = await postUrl(currentUrl); // Fetch the product data using the current URL
-            setProductData(data); // Set the product data after receiving the response
+            // Send message to the background script to get the current URL
+            chrome.runtime.sendMessage({ action: "getCurrentUrl" }, (response) => {
+                const url = response?.url; // Get the URL from the response
+                if (url) {
+                    setCurrentUrl(url); // Set the current URL in state
+                }
+            });
         };
 
-        fetchData(); // Fetch data when component mounts
-    }, []); // Empty dependency array to run once when the component mounts
+        fetchData(); // Fetch data when the component mounts
+    }, []); // Empty dependency array, meaning this runs once after the component mounts
+
+    // React to changes in currentUrl and fetch product data when it's updated
+    useEffect(() => {
+        if (currentUrl && currentUrl.startsWith("http")) {
+            // Proceed only if currentUrl is valid
+            const processUrl = async (url: string) => {
+                try {
+                    const data = await findProductByUrl(url); // Fetch the product data
+                    if (data && data.length > 0) {
+                        const product = {
+                            title: data[0].title, // Assuming data[0] contains the product
+                            description: data[0].description
+                        };
+                        setProductData(product);
+                        console.log("Product found:", product);
+                    } else {
+                        console.error("No product data found");
+                        setProductData(null); // Handle the case where no product is found
+                    }
+                } catch (error) {
+                    console.error("Error processing the URL:", error);
+                }
+                try {
+                    const data = await findReviewsByUrl(url); // Fetch the product data
+                    if (data && data.length > 0) {
+                        const reviewsArray = data.map((item) => {
+                            return {
+                                review: item.review,
+                                rating: item.rating,
+                                category: item.category,
+                                upvotes: item.upvotes,
+                                id: item.id
+                            };
+                        });
+                        setReviewsData(reviewsArray);
+                        console.log("Reviews found:", reviewsArray);
+                    } else {
+                        console.error("No product data found");
+                        setProductData(null); // Handle the case where no product is found
+                    }
+                } catch (error) {
+                    console.error("Error processing the URL:", error);
+                }
+            };
+
+            processUrl(currentUrl); // Call the function to process the URL
+        } else if (currentUrl) {
+            console.error("Invalid URL format:", currentUrl);
+        }
+    }, [currentUrl]); // This effect will run whenever currentUrl changes
+
 
     const handlePageChange = (page: string) => {
         setCurrentPage(page);
@@ -54,7 +103,7 @@ const Main: React.FC = () => {
             </div>
 
             {/* Conditionally render content based on the selected page */}
-            {currentPage === 'home' && <Home product={product} />}
+            {currentPage === 'home' && <Home productData={productData} />}
             {currentPage === 'leaveReview' && <LeaveReview />}
             {currentPage === 'lookAtReviews' && <LookAtReviews />}
             {currentPage === 'help' && <Help />}
