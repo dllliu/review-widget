@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+  <title>Create Review: </title>
+</head>
+
+<body>
+  <h2>Submit a Review</h2>
+
+
+  <h2>Enter your rating from 1-5</h2>
+
+  <button id="review_help">Review help</button>
+  <div id="product-questions"></div>
+
+<form id="review-form" action="/submit_review" method="POST">
+
+<label for="rating"><h3>Your rating:</h3></label>
+<input type="range" id="rating" name="rating" min="0" max="5" value="0">
+
+<span id="ratingValue">0</span> 
+
+<br>
+<br>
+
+<label for="review"><h3>Your Review:</h3></label>
+<textarea id="review" placeholder="Great product..." 
+style="width: 300px; height: 100px; padding: 5px; font-size: 16px; border-radius: 4px; 
+resize: none;"></textarea>
+
+<br>
+<br>
+<button id="submit-review" type="submit">Submit Review</button>
+</form>
+
+<br>
+
+<button id="goBackToPage1">Home</button>
+<script src="create-review.js"></script>
+
+</body>
+
+</html>

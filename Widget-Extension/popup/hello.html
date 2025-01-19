@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Review Central</title>
+</head>
+<body>
+
+  <button id="logout">Logout</button>
+
+  <button id="goToPage2">Create Review</button>
+
+  <br>
+  <br>
+
+  <button id="goToPage3">Look At Reviews</button>
+
+  <h1>Welcome to Review Central!</h1>
+
+  <div id="prod"></div>
+  <br>
+  <div id="review-summaries"></div> 
+ 
+  <form id="review-form">
+
+    <label for="question-section"><h3>Review Query:</h3></label>
+    <textarea id="user-question" placeholder="How is the product's durability?" 
+    style="width: 300px; height: 100px; padding: 5px; font-size: 16px; border-radius: 4px; 
+    resize: none;"></textarea>
+    <input type="submit" value="Submit">
+    <br>
+
+  </form>
+
+  <div id="result"></div>
+
+
+  <script src="popup.js"></script>
+
+
+</body>
+</html>
